@@ -209,6 +209,14 @@ bool Grafo::existe(int i) {
     return false;
 }
 
+/**
+ * Algoritmo guloso para cobertura de Vértice que Inicia um vetor de Nos com
+ * os Nos do grafo, e um vetor de int com seus respectivos graus, entao ordena
+ * os vetores e enquanto a primeira posiçao for maior que 0, coloca o no da
+ * posiçao 0 na soluçao zera seu grau, e diminuiu em 1 o grau dos Nos que
+ * havia adjacencia.
+ * @return Funçao sem retorno.
+ */
 void Grafo::gulosoCobertura() {
     No** vetInd = new No*[n];
     int vet[n];
@@ -240,9 +248,12 @@ void Grafo::gulosoCobertura() {
 
 
 /**
- * Shell Sort para ordenar o vetor de Nos baseado no grau
- * @param vetInd
- * @param vet
+ * Funcao que ordena o vetor de de graus e juntamente ordena o vetor
+ * de Nos para deixar o No e seu respectivo grau na mesma posiçao dos
+ * vetores.
+ * @param vetInd Ponteiro para o vetor de Nos
+ * @param vet Ponteiro para o vetor de graus
+ * @return Funçao sem retorno
  */
 void Grafo::ordenaVetores(No **vetInd, int *vet) {
     int i , j , value;
@@ -268,6 +279,14 @@ void Grafo::ordenaVetores(No **vetInd, int *vet) {
     }
 }
 
+/**
+ * Funçao que diminuiu o grau dos nos adjacentes no vetor que armazena
+ * o grau dos nos
+ * @param p Ponteiro para o primeiro no do Vetor
+ * @param vetInd Ponteiro para o vetor de Nos que formam o grafo
+ * @param vet Ponteiro para o vetor que guarda o grau dos nos
+ * @return Funçao sem retorno
+ */
 void Grafo::diminuiuGrauNosAdjacentes(No *p, No **vetInd, int *vet) {
     int* v = p->getArestas();
     int t = p->getGrau();

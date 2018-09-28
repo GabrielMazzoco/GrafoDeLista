@@ -96,7 +96,8 @@ void ListaAresta::imprimir(){
 /**
 *Funcao privada para buscar uma determinada aresta na lista
 *@param(int i) Aresta que deseja ser encontrada
-*@return: retorna um ponteiro para para Aresta se ela for encontrada ou NULL caso contrario
+*@return: retorna um ponteiro para para Aresta se ela for encontrada
+ * ou NULL caso contrario
 *****************************************************************/
 Aresta* ListaAresta::busca(int i){
     Aresta *p = primeiro;
@@ -109,6 +110,12 @@ Aresta* ListaAresta::busca(int i){
     return p;
 }
 
+/**
+ * Funçao que varre a lista de arestas de um determinado No e guarda
+ * os vertices que estao na lista
+ * @return Retorna um vetor de inteiros com o ID dos vertices da lista
+ * de arestas
+ */
 int *ListaAresta::getArestas() {
     int* vet = new int[n];
     Aresta* p = primeiro;
