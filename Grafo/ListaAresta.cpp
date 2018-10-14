@@ -125,3 +125,13 @@ int *ListaAresta::getArestas() {
     }
     return vet;
 }
+
+int ListaAresta::getPeso(int i) {
+    Aresta *p = primeiro;
+    while(p != nullptr){
+        if(p->getV1() == i)
+            return p->getPeso();
+        p = p->getProx();
+    }
+    return 	2147483645;
+}

@@ -299,3 +299,35 @@ void Grafo::diminuiuGrauNosAdjacentes(No *p, No **vetInd, int *vet) {
     }
     delete [] v;
 }
+
+/**
+ * Faz uma matriz com a distancia minima entre todos os Vertices do
+ * Grafo.
+ * @return Funcao sem retorno
+ */
+void Grafo::algFloyd() {
+    int mat[n][n];
+    No *p;
+    for(int i=0 ; i<n ; i++){
+        for(int j=0 ; j<n ; j++){
+            if(i == j){ mat[i][j] = 0; }
+            else{
+                p = busca(i);
+                mat[i][j] = p->getPeso(j);
+            }
+        }
+    }
+    for(int k=0 ; k<n ; k++){
+        for(int i=0 ; i<n ; i++){
+            for(int j=0 ; j<n ; j++){
+                if(mat[i][j] > mat[i][k] + mat[k][j] && mat[i][k] + mat[k][j] > 0)
+                    mat[i][j] = mat[i][k] + mat[k][j];
+            }
+        }
+    }
+    for(int i=0 ; i<n ; i++){
+        for(int j=0 ; j<n ; j++){
+            cout << mat[i][j] << "\t";
+        }cout << endl;
+    }
+}

@@ -12,6 +12,7 @@ class ListaAresta
         void removeAresta(int k);
         void imprimir();
         int* getArestas();
+        int getPeso(int i);
 
     private:
         Aresta *primeiro;
