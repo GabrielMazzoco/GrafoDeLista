@@ -21,6 +21,7 @@ class Grafo
         void gulosoCobertura();
         void diminuiuGrauNosAdjacentes(No* p, No **vetInd, int *vet);
         void algFloyd();
+        void gulosoRandCobertura(float taxa, int vezes);
 
 
     private:

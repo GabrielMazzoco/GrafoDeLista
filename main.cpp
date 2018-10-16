@@ -27,7 +27,8 @@ int main()
     LeituraGrafos in;
     in.iniciaGrafo(&t);
     t.gulosoCobertura();
-    t.algFloyd();
+    //t.algFloyd();
+    t.gulosoRandCobertura(0.05, 20);
 
     /*t.addAresta(1, 2, 95);
     t.addAresta(1, 3, 85);

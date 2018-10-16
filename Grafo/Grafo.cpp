@@ -1,6 +1,7 @@
 #include "Grafo.h"
 #include <iostream>
 #include <cstdlib>
+#include <math.h>
 
 using namespace std;
 
@@ -228,7 +229,7 @@ void Grafo::gulosoCobertura() {
         p = p->getProx();
     }
     ordenaVetores(vetInd, vet);
-    cout << "Solucao Cobertura de Vertice : ";
+    cout << "Solucao Cobertura de Vertice : " << endl;
     int numSolucao = 0;
     while(vet[0] > 0){
         numSolucao++;
@@ -238,12 +239,68 @@ void Grafo::gulosoCobertura() {
 
         vet[0] = 0;
         ordenaVetores(vetInd, vet);
-        if(numSolucao%25 == 0)
+        if(numSolucao%20 == 0)
             cout << endl;
     }
     cout << endl;
     cout << "Numero de nos na solucao : " << numSolucao << endl;
+    cout << endl;
     delete [] vetInd;
+}
+
+/**
+ * Algoritmo guloso Randomizado para cobertura de Vertice que inicia um vetor
+ * de Nos com os Vertices do grafo, e um vetor de int com seus respectivos graus,
+ * entao ordena os vetores simultaneamente e enquanto a primeira posicao for maior
+ * que 0, pega um No aleatorio de acordo com a taxa e o coloca na solucao, zera seu
+ * grau e diminuiu em 1 o grau dos Vertices adjacentes a ele.
+ * @param taxa Valor Float entre 0 e 1 q determina o limite da aleatoriedade do
+ * algoritmo
+ * @param vezes Valor Int maior que 0 que determina quantas vezes sera repetido
+ * o algoritmo
+ */
+void Grafo::gulosoRandCobertura(float taxa, int vezes) {
+    if(taxa > 0 && taxa <= 1 && vezes > 0){
+        int melhorSolucao = 2147483645;
+        for(int j=0 ; j<vezes ; j++){
+            No** vetInd = new No*[n];
+            int vet[n];
+            No* p = primeiro;
+            for(int i=0 ; i<n ; i++){
+                vetInd[i] = p;
+                vet[i] = p->getGrau();
+                //cout << vetInd[i]->getId() << "  " << vet[i] << endl;
+                p = p->getProx();
+            }
+            ordenaVetores(vetInd, vet);
+            cout << "Solucao Cobertura de Vertice : " << endl;
+            int numSolucao = 0;
+            int qtdAtt = n;
+            while(vet[0] > 0){
+                numSolucao++;
+                int pos = ceil(taxa * qtdAtt) + 1;
+                pos = rand() % pos;
+                cout << vetInd[pos]->getId() << "   ";
+
+                diminuiuGrauNosAdjacentes(vetInd[pos], vetInd, vet);
+
+                vet[pos] = 0;
+                qtdAtt--;
+                ordenaVetores(vetInd, vet);
+                if(numSolucao%20 == 0)
+                    cout << endl;
+            }
+            if(melhorSolucao > numSolucao)
+                melhorSolucao = numSolucao;
+            cout << endl;
+            cout << "Numero de nos na solucao : " << numSolucao << endl;
+            cout << endl;
+            delete [] vetInd;
+        }
+        cout << "Melhor Solucao : " << melhorSolucao << endl;
+    } else {
+        cout << "Quantidades Invalidas (ERRO)" << endl;
+    }
 }
 
 
