@@ -135,3 +135,7 @@ int ListaAresta::getPeso(int i) {
     }
     return 	2147483645;
 }
+
+Aresta *ListaAresta::getPrimeira() {
+    return primeiro;
+}

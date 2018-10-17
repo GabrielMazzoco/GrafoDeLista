@@ -23,6 +23,7 @@ class No
         void diminuiu1Grau() { grau--; }
         int* getArestas() { return lista->getArestas(); }
         int getPeso(int i) { return lista->getPeso(i); }
+        Aresta* getPrimeiraAresta() { return lista->getPrimeira(); }
 
 
     private:
