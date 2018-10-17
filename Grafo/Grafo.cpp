@@ -229,21 +229,21 @@ void Grafo::gulosoCobertura() {
         p = p->getProx();
     }
     ordenaVetores(vetInd, vet);
-    cout << "Solucao Cobertura de Vertice : " << endl;
+    //cout << "Solucao Cobertura de Vertice : " << endl;
     int numSolucao = 0;
     while(vet[0] > 0){
         numSolucao++;
-        cout << vetInd[0]->getId() << "   ";
+        //cout << vetInd[0]->getId() << "   ";
 
         diminuiuGrauNosAdjacentes(vetInd[0], vetInd, vet);
 
         vet[0] = 0;
         ordenaVetores(vetInd, vet);
-        if(numSolucao%20 == 0)
-            cout << endl;
+        //if(numSolucao%20 == 0)
+          //  cout << endl;
     }
     cout << endl;
-    cout << "Numero de nos na solucao : " << numSolucao << endl;
+    cout << "Numero de nos na solucao Gulosa : " << numSolucao << endl;
     cout << endl;
     delete [] vetInd;
 }
@@ -273,31 +273,31 @@ void Grafo::gulosoRandCobertura(float taxa, int vezes) {
                 p = p->getProx();
             }
             ordenaVetores(vetInd, vet);
-            cout << "Solucao Cobertura de Vertice : " << endl;
+            //cout << "Solucao Cobertura de Vertice : " << endl;
             int numSolucao = 0;
             int qtdAtt = n;
             while(vet[0] > 0){
                 numSolucao++;
                 int pos = ceil(taxa * qtdAtt) + 1;
                 pos = rand() % pos;
-                cout << vetInd[pos]->getId() << "   ";
+                //cout << vetInd[pos]->getId() << "   ";
 
                 diminuiuGrauNosAdjacentes(vetInd[pos], vetInd, vet);
 
                 vet[pos] = 0;
                 qtdAtt--;
                 ordenaVetores(vetInd, vet);
-                if(numSolucao%20 == 0)
-                    cout << endl;
+                //if(numSolucao%20 == 0)
+                  //  cout << endl;
             }
             if(melhorSolucao > numSolucao)
                 melhorSolucao = numSolucao;
-            cout << endl;
-            cout << "Numero de nos na solucao : " << numSolucao << endl;
-            cout << endl;
+            //cout << endl;
+            //cout << "Numero de nos na solucao : " << numSolucao << endl;
+            //cout << endl;
             delete [] vetInd;
         }
-        cout << "Melhor Solucao : " << melhorSolucao << endl;
+        cout << "Melhor Solucao do Randomizado : " << melhorSolucao << endl;
     } else {
         cout << "Quantidades Invalidas (ERRO)" << endl;
     }
