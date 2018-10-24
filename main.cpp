@@ -6,6 +6,8 @@ using namespace std;
 
 int main()
 {
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     Grafo t;
 
     LeituraGrafos in;
@@ -13,6 +15,7 @@ int main()
     t.gulosoCobertura();
     //t.algFloyd();
     t.gulosoRandCobertura(0.05, 100);
+    int i =  t.menorCaminhoDijkstra(20, 1500);
 
     /*t.addAresta(1, 2, 95);
     t.addAresta(1, 3, 85);

@@ -22,6 +22,8 @@ class Grafo
         void diminuiuGrauNosAdjacentes(No* p, No **vetInd, int *vet);
         void algFloyd();
         void gulosoRandCobertura(float taxa, int vezes);
+        int menorCaminhoDijkstra(int v, int vN);
+        bool verificaVisit(bool vet[], int n);
 
 
     private:

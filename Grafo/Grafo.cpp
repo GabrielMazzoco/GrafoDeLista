@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
+#include <limits.h>
 
 using namespace std;
 
@@ -278,7 +279,7 @@ void Grafo::gulosoRandCobertura(float taxa, int vezes) {
             int qtdAtt = n;
             while(vet[0] > 0){
                 numSolucao++;
-                int pos = ceil(taxa * qtdAtt) + 1;
+                int pos = ceil(taxa * qtdAtt);
                 pos = rand() % pos;
                 //cout << vetInd[pos]->getId() << "   ";
 
@@ -387,4 +388,84 @@ void Grafo::algFloyd() {
             cout << mat[i][j] << "\t";
         }cout << endl;
     }
+}
+
+/**
+* Algoritmo de Dijkstra para encontrar menor caminho entre dois vertices
+* @param v int com o no inicial
+* @param vN int com o no destino
+* @return dist[vN] com a distancia entre os dois nos passados por parâmetro
+*/
+int Grafo::menorCaminhoDijkstra(int v, int vN)
+{
+    No* p = busca(v);
+    No* q = busca(vN);
+    if(p != nullptr && q != nullptr){
+        int menor;
+
+        int dist[n], pre[n];
+        bool visit[n];
+        for(int i = 0; i < n; i++){
+            dist[i] = INT_MAX/2;
+            pre[i] = -1;
+            visit[i] = false;
+        }
+        dist[p->getId()] = 0;
+
+        while(!verificaVisit(visit, n)){
+            if(!visit[p->getId()]){
+                visit[p->getId()] = true;
+                Aresta* a = p->getPrimeiraAresta();
+                if(a != nullptr){
+                    while(a != nullptr){
+                        if(a->getPeso() >= 0)
+                            if(dist[a->getV1()] > dist[p->getId()] + a->getPeso()){
+                                dist[a->getV1()] = dist[p->getId()] + a->getPeso();
+                                pre[a->getV1()] = p->getId();
+                            }
+                        a = a->getProx();
+                    }
+                }
+                int i;
+                for(i = 0; i < n; i++){
+                    if(!visit[i])
+                        break;
+                    if(i == n-1){
+                        //for(int j = 0; j < n; j++)
+                            //cout << dist[j] << "\t";
+                        cout << endl;
+                        cout << "A distância entre " << v << " e " << vN << " e: " << dist[vN] << endl;
+                        return dist[vN];
+                    }
+                }
+                menor = i;
+                for(i = menor+1; i < n; i++){
+                    if(!visit[i] && dist[menor] > dist[i])
+                        menor = i;
+                }
+                p = busca(menor);
+            }
+        }
+        if(dist[vN] == INT_MAX/2)
+            cout << "Nao existe caminho entre os vertices." << endl;
+        return dist[vN];
+    }
+    else{
+        cout << "Vertice " << v << " ou "<< vN << " nao encontrados no grafo! (ERRO)" << endl;
+        return -1;
+    }
+}
+
+/**
+* Função que verifica se o vetor é false em todas as posições
+* @param vet bool com os indices dos nos do grafo
+* @param n int com o tamanho do vetor
+* @return false se todas as posicoes sao false ou true se encontrado ao menos um true
+*/
+bool Grafo::verificaVisit(bool vet[], int n) // funcao que verifica se todos os indicies do vetor foram visitados
+{
+    for(int i = 0; i < n; i++)
+        if(!vet[i])
+            return false;
+    return true;
 }
