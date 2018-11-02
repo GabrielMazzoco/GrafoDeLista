@@ -15,7 +15,6 @@ int main()
     t.gulosoCobertura();
     //t.algFloyd();
     t.gulosoRandCobertura(0.05, 100);
-    int i =  t.menorCaminhoDijkstra(20, 1500);
 
     /*t.addAresta(1, 2, 95);
     t.addAresta(1, 3, 85);

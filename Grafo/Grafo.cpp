@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <math.h>
 #include <limits.h>
+#include <fstream>
 
 using namespace std;
 
@@ -117,36 +118,6 @@ void Grafo::addAresta(int a, int b, int peso){
 }
 
 /**
-*Cria uma aresta direcionada se os nos existirem
-*@param(int a, int b, int peso) Int a representa o No ao qual saira
-*o arco e o Int b representa o No ao qual o arco aponta e o peso do arco
-*@return: funcao sem retorno
-*****************************************************************/
-void Grafo::addArestaDir(int a, int b, int peso){
-    No* p = busca(a);
-    if(p != nullptr){
-        p->addAresta(b, peso);
-    } else {
-        cout << "Vertice nao encontrado. " << endl;
-    }
-}
-
-/**
-*Remove um arco entre os Nos
-*@param(int a, int b) Int a representa o No ao qual saira
-*o arco e o Int b representa o No ao qual o arco apontara
-*@return: funcao sem retorno
-*****************************************************************/
-void Grafo::removArestaDir(int a, int b){
-    No* p = busca(a);
-    if(p != nullptr){
-        p->removAresta(b);
-    } else {
-        cout << "Vertice Nao encontrado. " << endl;
-    }
-}
-
-/**
 *Remove uma Aresta entre os Vertices
 *@param(int a, int b)Ids dos nos que possui aresta a ser removida
 *@return; funcao sem retorno
@@ -226,26 +197,28 @@ void Grafo::gulosoCobertura() {
     for(int i=0 ; i<n ; i++){
         vetInd[i] = p;
         vet[i] = p->getGrau();
-        //cout << vetInd[i]->getId() << "  " << vet[i] << endl;
         p = p->getProx();
     }
     ordenaVetores(vetInd, vet);
-    //cout << "Solucao Cobertura de Vertice : " << endl;
+    ofstream f;
+    f.open("../Saidas.txt", ofstream::ios_base::app);
+    f << endl << "Solução algoritmo guloso : " << endl;
     int numSolucao = 0;
     while(vet[0] > 0){
         numSolucao++;
-        //cout << vetInd[0]->getId() << "   ";
+        f << vetInd[0]->getId() << "   ";
 
         diminuiuGrauNosAdjacentes(vetInd[0], vetInd, vet);
 
         vet[0] = 0;
         ordenaVetores(vetInd, vet);
-        //if(numSolucao%20 == 0)
-          //  cout << endl;
+        if(numSolucao%20 == 0)
+            f << endl;
     }
     cout << endl;
     cout << "Numero de nos na solucao Gulosa : " << numSolucao << endl;
     cout << endl;
+    f << endl;
     delete [] vetInd;
 }
 
@@ -348,11 +321,12 @@ void Grafo::ordenaVetores(No **vetInd, int *vet) {
 void Grafo::diminuiuGrauNosAdjacentes(No *p, No **vetInd, int *vet) {
     int* v = p->getArestas();
     int t = p->getGrau();
-    //cout << "Grau No : " << p->getId() << " eh " << n << endl;
     for(int j=0 ; j<t ; j++){
         for(int i=0 ; i<n ; i++) {
-            if (vetInd[i]->getId() == v[j])
+            if (vetInd[i]->getId() == v[j]) {
                 vet[i] = vet[i] - 1;
+                break;
+            }
         }
     }
     delete [] v;

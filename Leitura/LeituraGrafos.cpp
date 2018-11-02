@@ -17,7 +17,7 @@ using namespace std;
  * @return: Funcao sem retorno
  *****************************************************************/
 void LeituraGrafos::iniciaGrafo(Grafo *p) {
-    f.open("../Leitura/grafo_1807.txt");
+    f.open("../Leitura/grafo_1317.txt");
     if(!f.is_open())
         cout << "Erro ao abrir o Arquuivo." << endl;
     else{

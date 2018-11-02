@@ -11,9 +11,7 @@ class Grafo
         int getN() { return n; }
         void insereNo(int i);
         void removeNo(int k);
-        void addArestaDir(int a, int b, int peso);
         void addAresta(int a, int b, int peso);
-        void removArestaDir(int a, int b);
         void removAresta(int a, int b);
         void imprimir();
         void imprimirArestas();
