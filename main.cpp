@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include "Grafo/Grafo.h"
 #include "Leitura/LeituraGrafos.h"
 
@@ -12,9 +13,50 @@ int main()
 
     LeituraGrafos in;
     in.iniciaGrafo(&t);
-    t.gulosoCobertura();
-    //t.algFloyd();
-    t.gulosoRandCobertura(0.05, 100);
+
+    int flag = 1000;
+    while(flag != 0) {
+        if(flag == 1)
+            t.gulosoCobertura();
+        else if(flag == 2){
+            float alfa;
+            int vezes;
+            cout << "Digite o Alfa (Entre 0 e 1) : ";
+            cin >> alfa;
+            cout << "Digite quantidade de vezes : ";
+            cin >> vezes;
+            t.gulosoRandCobertura(alfa, vezes);
+        }
+        else if(flag == 3){
+            int a, b;
+            cout << "Digite o primeiro Vertice : ";
+            cin >> a;
+            cout << "Digite o segundo Vertice : ";
+            cin >> b;
+            t.algFloyd(a, b);
+        }
+        else if(flag == 4){
+            int a, b;
+            cout << "Digite o primeiro Vertice : ";
+            cin >> a;
+            cout << "Digite o segundo Vertice : ";
+            cin >> b;
+            t.menorCaminhoDijkstra(a, b);
+        }
+        else if(flag == 5){
+            t.sequenciaGraus();
+        }
+        //more options
+
+        cout << "------------- Selecione uma opcao -------------" << endl;
+        cout << " 1 - Algoritmo Guloso de Cobertura de Vertice" << endl;
+        cout << " 2 - Algoritmo Guloso Randomizado " << endl;
+        cout << " 3 - Algoritmo de Floyd " << endl;
+        cout << " 4 - Algoritmo de Dijkstra " << endl;
+        cout << " 5 - Sequencia de Graus " << endl;
+        cout << " 0 - Sair" << endl;
+        cin >> flag;
+    }
 
     /*t.addAresta(1, 2, 95);
     t.addAresta(1, 3, 85);

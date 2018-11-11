@@ -9,7 +9,7 @@ using namespace std;
 
 Grafo::Grafo()
 {
-    cout << "------------Criando Grafo------------" << endl;
+    //cout << "------------Criando Grafo------------" << endl;
     primeiro = nullptr;
     ultimo = nullptr;
     n = 0;
@@ -18,7 +18,7 @@ Grafo::Grafo()
 Grafo::~Grafo()
 {
     No *p = primeiro;
-    cout << "------------Apagando Grafo------------" << endl;
+    //cout << "------------Apagando Grafo------------" << endl;
     while(p != nullptr)
     {
         No *t = p->getProx();
@@ -337,7 +337,7 @@ void Grafo::diminuiuGrauNosAdjacentes(No *p, No **vetInd, int *vet) {
  * Grafo.
  * @return Funcao sem retorno
  */
-void Grafo::algFloyd() {
+void Grafo::algFloyd(int a, int b) {
     int mat[n][n];
     No *p;
     for(int i=0 ; i<n ; i++){
@@ -357,11 +357,13 @@ void Grafo::algFloyd() {
             }
         }
     }
-    for(int i=0 ; i<n ; i++){
-        for(int j=0 ; j<n ; j++){
-            cout << mat[i][j] << "\t";
-        }cout << endl;
+    ofstream f;
+    f.open("../Saidas.txt", ofstream::ios_base::app);
+    if((a >= 0 && a < n) && (b >= 0 && b < n)){
+        f << endl << "Menor Caminho entre " << a << " e " << b << " : " << mat[a][b] << endl;
     }
+    else
+        f << endl << "Vertices Invalidos (ERRO)-Algoritmo Floyd" << endl;
 }
 
 /**
@@ -370,10 +372,12 @@ void Grafo::algFloyd() {
 * @param vN int com o no destino
 * @return dist[vN] com a distancia entre os dois nos passados por parâmetro
 */
-int Grafo::menorCaminhoDijkstra(int v, int vN)
+void Grafo::menorCaminhoDijkstra(int v, int vN)
 {
     No* p = busca(v);
     No* q = busca(vN);
+    ofstream f;
+    f.open("../Saidas.txt", ofstream::ios_base::app);
     if(p != nullptr && q != nullptr){
         int menor;
 
@@ -409,7 +413,8 @@ int Grafo::menorCaminhoDijkstra(int v, int vN)
                             //cout << dist[j] << "\t";
                         cout << endl;
                         cout << "A distância entre " << v << " e " << vN << " e: " << dist[vN] << endl;
-                        return dist[vN];
+                        f << endl << "Menor Caminho entre " << v << " e " << vN << " : " << dist[vN] << endl;
+                        //return dist[vN];
                     }
                 }
                 menor = i;
@@ -420,13 +425,16 @@ int Grafo::menorCaminhoDijkstra(int v, int vN)
                 p = busca(menor);
             }
         }
-        if(dist[vN] == INT_MAX/2)
+        if(dist[vN] == INT_MAX/2) {
             cout << "Nao existe caminho entre os vertices." << endl;
-        return dist[vN];
+            f << endl << "Nao existe caminho entre os vertices. " << endl;
+            //return dist[vN];
+        }
     }
     else{
         cout << "Vertice " << v << " ou "<< vN << " nao encontrados no grafo! (ERRO)" << endl;
-        return -1;
+        f << endl << "Vertice " << v << " ou "<< vN << " nao encontrados no grafo! (ERRO)-Algoritmo Dijkstra" << endl;
+        //return -1;
     }
 }
 
@@ -442,4 +450,34 @@ bool Grafo::verificaVisit(bool vet[], int n) // funcao que verifica se todos os 
         if(!vet[i])
             return false;
     return true;
+}
+
+bool Grafo::ehCompleto() {
+    No* p = primeiro;
+    while(p != nullptr){
+        if(p->getGrau() != n-1)
+            return false;
+        p = p->getProx();
+    }
+    return true;
+}
+
+void Grafo::sequenciaGraus() {
+    No** vetInd = new No*[n];
+    int vet[n];
+    No* p = primeiro;
+    for(int i=0 ; i<n ; i++){
+        vetInd[i] = p;
+        vet[i] = p->getGrau();
+        p = p->getProx();
+    }
+    ordenaVetores(vetInd, vet);
+    ofstream f;
+    f.open("../Saidas.txt", ofstream::ios_base::app);
+    f << endl << "Sequencia de Graus : " << endl;
+    for(int i=0 ; i<n ; i++){
+        f << vet[i] << "  ";
+        if((i+1) % 20 == 0)
+            f << endl;
+    }
 }

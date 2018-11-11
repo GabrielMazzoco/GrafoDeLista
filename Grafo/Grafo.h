@@ -18,10 +18,12 @@ class Grafo
         int getGrauNo(int a);
         void gulosoCobertura();
         void diminuiuGrauNosAdjacentes(No* p, No **vetInd, int *vet);
-        void algFloyd();
+        void algFloyd(int a, int b);
         void gulosoRandCobertura(float taxa, int vezes);
-        int menorCaminhoDijkstra(int v, int vN);
+        void menorCaminhoDijkstra(int v, int vN);
         bool verificaVisit(bool vet[], int n);
+        bool ehCompleto();
+        void sequenciaGraus();
 
 
     private:

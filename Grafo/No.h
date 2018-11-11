@@ -19,8 +19,6 @@ class No
         void removAresta(int k) { lista->removeAresta(k); grau--; }
         void setId(int i) { id = i; }
         void imprimirArestas() { cout << "No " << id << " possui aresta com : ";  lista->imprimir(); }
-        void zerarGrau() { grau = 0; }
-        void diminuiu1Grau() { grau--; }
         int* getArestas() { return lista->getArestas(); }
         int getPeso(int i) { return lista->getPeso(i); }
         Aresta* getPrimeiraAresta() { return lista->getPrimeira(); }
