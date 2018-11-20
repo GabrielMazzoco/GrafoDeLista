@@ -11,10 +11,11 @@ using namespace std;
 
 class LeituraGrafos {
 private:
-    ifstream f;
+    ifstream file;
 
 public:
-    void iniciaGrafo(Grafo *p);
+    void iniciaGrafo(Grafo *p, char *path);
+    void iniciaGrafoPonderado(Grafo *p, char *path);
 };
 
 

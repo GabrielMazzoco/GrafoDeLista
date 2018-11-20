@@ -1,23 +1,36 @@
 #include <iostream>
 #include <time.h>
+#include <chrono>
 #include "Grafo/Grafo.h"
 #include "Leitura/LeituraGrafos.h"
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[ ])
 {
     srand(static_cast<unsigned int>(time(nullptr)));
+
+    if(argc == 1) {
+        cout << "Faltam Argumentos" << endl;
+        exit(1);
+    }
+
 
     Grafo t;
 
     LeituraGrafos in;
-    in.iniciaGrafo(&t);
+    in.iniciaGrafo(&t, argv[1]);
 
     int flag = 1000;
     while(flag != 0) {
-        if(flag == 1)
+        if(flag == 1) {
+            auto inicio = std::chrono::high_resolution_clock::now();
             t.gulosoCobertura();
+            auto resultado = std::chrono::high_resolution_clock::now() - inicio;
+            long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(resultado).count();
+            cout << microseconds << endl;
+
+        }
         else if(flag == 2){
             float alfa;
             int vezes;

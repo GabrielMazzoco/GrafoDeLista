@@ -16,17 +16,34 @@ using namespace std;
  * @param(Grafo *p) Ponteiro do Grafo
  * @return: Funcao sem retorno
  *****************************************************************/
-void LeituraGrafos::iniciaGrafo(Grafo *p) {
-    f.open("../Leitura/grafo_125.txt");
-    if(!f.is_open())
+void LeituraGrafos::iniciaGrafo(Grafo *p, char *path) {
+    file.open(path);
+    if(!file.is_open())
         cout << "Erro ao abrir o Arquuivo." << endl;
     else{
         int a, b, peso;
-        f >> a;
+        file >> a;
         cout << "Numeros de Nos : " << a << endl;
-        while(!f.eof()){
-            f >> a >> b >> peso;
+        while(!file.eof()){
+            file >> a >> b;
+            p->addAresta(a, b, 0);
+        }
+    }
+    file.close();
+}
+
+void LeituraGrafos::iniciaGrafoPonderado(Grafo *p, char *path) {
+    file.open(path);
+    if(!file.is_open())
+        cout << "Erro ao abrir o Arquuivo." << endl;
+    else{
+        int a, b, peso;
+        file >> a;
+        cout << "Numeros de Nos : " << a << endl;
+        while(!file.eof()){
+            file >> a >> b >> peso;
             p->addAresta(a, b, peso);
         }
     }
+    file.close();
 }
