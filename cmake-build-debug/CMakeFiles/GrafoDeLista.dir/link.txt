@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/GrafoDeLista.dir/Grafo.cpp.o CMakeFiles/GrafoDeLista.dir/ListaAresta.cpp.o CMakeFiles/GrafoDeLista.dir/main.cpp.o CMakeFiles/GrafoDeLista.dir/LeituraGrafos.cpp.o CMakeFiles/GrafoDeLista.dir/Pilha.cpp.o  -o GrafoDeLista 

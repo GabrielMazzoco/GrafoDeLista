@@ -1,9 +1,11 @@
 #include "Grafo.h"
+#include "Pilha.h"
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
 #include <limits.h>
 #include <fstream>
+#include <unistd.h>
 
 using namespace std;
 
@@ -219,6 +221,7 @@ void Grafo::gulosoCobertura() {
     cout << "Numero de nos na solucao Gulosa : " << numSolucao << endl;
     cout << endl;
     f << endl;
+    f.close();
     delete [] vetInd;
 }
 
@@ -233,48 +236,48 @@ void Grafo::gulosoCobertura() {
  * @param vezes Valor Int maior que 0 que determina quantas vezes sera repetido
  * o algoritmo
  */
-void Grafo::gulosoRandCobertura(float taxa, int vezes) {
+grafoAux Grafo::gulosoRandCobertura(float taxa, int vezes) {
+    grafoAux aux;
     if(taxa > 0 && taxa <= 1 && vezes > 0){
         int melhorSolucao = 2147483645;
         for(int j=0 ; j<vezes ; j++){
             No** vetInd = new No*[n];
-            int vet[n];
+            int *vet = new int [n];
+            int *vetNos = new int [n];
             No* p = primeiro;
             for(int i=0 ; i<n ; i++){
                 vetInd[i] = p;
                 vet[i] = p->getGrau();
-                //cout << vetInd[i]->getId() << "  " << vet[i] << endl;
                 p = p->getProx();
             }
             ordenaVetores(vetInd, vet);
-            //cout << "Solucao Cobertura de Vertice : " << endl;
             int numSolucao = 0;
             int qtdAtt = n;
+            int cont = 0;
             while(vet[0] > 0){
                 numSolucao++;
                 int pos = ceil(taxa * qtdAtt);
                 pos = rand() % pos;
-                //cout << vetInd[pos]->getId() << "   ";
+                vetNos[cont] = vetInd[pos]->getId();
+                cont++;
 
                 diminuiuGrauNosAdjacentes(vetInd[pos], vetInd, vet);
 
                 vet[pos] = 0;
                 qtdAtt--;
                 ordenaVetores(vetInd, vet);
-                //if(numSolucao%20 == 0)
-                  //  cout << endl;
             }
-            if(melhorSolucao > numSolucao)
+            if(melhorSolucao > numSolucao){
                 melhorSolucao = numSolucao;
-            //cout << endl;
-            //cout << "Numero de nos na solucao : " << numSolucao << endl;
-            //cout << endl;
+                aux.tam = numSolucao;
+                aux.vet = vetNos;
+            }
             delete [] vetInd;
         }
-        cout << "Melhor Solucao do Randomizado : " << melhorSolucao << endl;
     } else {
         cout << "Quantidades Invalidas (ERRO)" << endl;
     }
+    return aux;
 }
 
 
@@ -360,10 +363,14 @@ void Grafo::algFloyd(int a, int b) {
     ofstream f;
     f.open("../Saidas.txt", ofstream::ios_base::app);
     if((a >= 0 && a < n) && (b >= 0 && b < n)){
-        f << endl << "Menor Caminho entre " << a << " e " << b << " : " << mat[a][b] << endl;
+        f << endl << "Menor Caminho(Floyd) entre " << a << " e " << b << " : " << mat[a][b] << endl;
+        cout << endl << "Menor Caminho(Floyd) entre " << a << " e " << b << " : " << mat[a][b] << endl;
     }
-    else
+    else {
         f << endl << "Vertices Invalidos (ERRO)-Algoritmo Floyd" << endl;
+        cout << endl << "Vertices Invalidos (ERRO)-Algoritmo Floyd" << endl;
+    }
+    f.close();
 }
 
 /**
@@ -413,7 +420,7 @@ void Grafo::menorCaminhoDijkstra(int v, int vN)
                             //cout << dist[j] << "\t";
                         cout << endl;
                         cout << "A distância entre " << v << " e " << vN << " e: " << dist[vN] << endl;
-                        f << endl << "Menor Caminho entre " << v << " e " << vN << " : " << dist[vN] << endl;
+                        f << endl << "Menor Caminho(Dijkstra) entre " << v << " e " << vN << " : " << dist[vN] << endl;
                         //return dist[vN];
                     }
                 }
@@ -426,7 +433,7 @@ void Grafo::menorCaminhoDijkstra(int v, int vN)
             }
         }
         if(dist[vN] == INT_MAX/2) {
-            cout << "Nao existe caminho entre os vertices." << endl;
+            cout << endl << "Nao existe caminho entre os vertices." << endl;
             f << endl << "Nao existe caminho entre os vertices. " << endl;
             //return dist[vN];
         }
@@ -452,6 +459,10 @@ bool Grafo::verificaVisit(bool vet[], int n) // funcao que verifica se todos os 
     return true;
 }
 
+/**
+ * Verifica se o Grafo eh completo
+ * @return Retorna o valor logico encontrado
+ */
 bool Grafo::ehCompleto() {
     No* p = primeiro;
     while(p != nullptr){
@@ -462,6 +473,9 @@ bool Grafo::ehCompleto() {
     return true;
 }
 
+/**
+ * Escreve no arquivo de saida a sequencia de graus do Grafo
+ */
 void Grafo::sequenciaGraus() {
     No** vetInd = new No*[n];
     int vet[n];
@@ -479,5 +493,313 @@ void Grafo::sequenciaGraus() {
         f << vet[i] << "  ";
         if((i+1) % 20 == 0)
             f << endl;
+    }
+    f.close();
+}
+
+/**
+ * Algoritmo guloso reativo que faz um vetor com alfas de 0.05 ate 0.5 e chama o randomizado
+ * e faz outro vetor de probabilidades, atualizando as probabilidades de acordo com as melhores
+ * solucoes geradas por cada alfa, fazendo com que os melhores alfas tenham maiores probabilidades
+ * gerando solucoes melhores.
+ * @param k Int de quantas iteracoes serao feitas
+ * @param tamAlf Tamanho do vetor de alfas
+ * @return Melhor Solucao Gerada
+ */
+grafoAux Grafo::gulosoReativo(int k, int tamAlf) {
+    float *alfas = new float[tamAlf];
+    float b = 0.05;
+    int mat[2][tamAlf];//MATRIZ DE MEDIAS
+    alfas[0] = 0.05;
+    for (int a = 1; a < tamAlf; a++) alfas[a] = alfas[a - 1] + b;//VARIAÇÕES DE ALPFAS 0.1 ATÉ 0.5
+    grafoAux *menor = new grafoAux[tamAlf];
+
+    ////PRIMEIRA ITERAÇÃO = RANDOMIZADO
+    menor[0] = gulosoRandCobertura(alfas[0], 1);
+    mat[0][0] = menor[0].tam;
+    mat[1][0] = 1;
+    int melhor = menor[0].tam;
+    for (int c = 1; c < tamAlf; c++) {
+        menor[c] = gulosoRandCobertura(alfas[c], 1);//
+        mat[0][c] = menor[c].tam;
+        mat[1][c] = 1;
+        if (menor[c].tam < melhor) melhor = menor[c].tam; //MELHOR SOLUCAO DA 1º ITERAÇÃO
+    }
+    float *Q = new float[tamAlf];
+    for (int d = 0; d < tamAlf; d++)
+        Q[d] = Qi(melhor, mat[0][d],
+                  mat[1][d]);//cria o vetor de normalização e atualiza com os resultados da primeira iteração
+
+    //VETOR PROBABILIDADE
+    float sum = SomatorioQ(Q, tamAlf);
+    float *P = new float[tamAlf];
+    P[0] = (1000 * (Q[0] / (float) sum));//cria o vetor de probabilidade e o adequa ao padrão escolhido
+    for (int i = 1; i < tamAlf; i++) {
+        P[i] = P[i - 1] + (1000 * (Q[i] / (float) sum));
+    }
+
+    int i = 1;
+    grafoAux s;
+    grafoAux better = menor[0];
+    int in;
+    //srand((unsigned) time(NULL));
+    while (i < k) {
+        //cout << "i " << i << endl;
+        in = RandomPseudoAleatorio(P, tamAlf);//  ESCOLHE UM ALFA ALEATORIO
+        s = gulosoReativo(alfas[in], 1);
+        if (menor[in].tam > s.tam) menor[in] = s;//atualiza menor solucao no vetor
+        mat[0][in] = mat[0][in] + s.tam;//incrementa o somatorio das solucoes
+        mat[1][in]++;//incremente o numero de vezes que um alfa foi radado
+        if (s.tam < melhor) {
+            melhor = s.tam;    //atualiza a melhor solucao
+            better = s;
+        }
+        if (i % 10 == 0) //atualiza vetor de normalização e o vetor de probabilidade
+        {
+            for (int f = 0; f < tamAlf; f++) {
+                Q[f] = Qi(melhor, mat[0][f], mat[1][f]);
+            }
+            sum = SomatorioQ(Q, tamAlf);
+            P[0] = (1000 * (Q[0] / (float) sum));
+            for (int g = 1; g < tamAlf; g++) {
+                P[g] = (P[g - 1] + 1000 * (Q[g] / (float) sum));
+            }
+        }
+        i++;
+    }
+    return better;
+}
+/**
+    Calcula Qi na forma escolhida pelo grupo
+*/
+float Grafo::Qi(float tamMelhorS, float somatorio, float qtd)
+{
+    return ( ( (float)tamMelhorS)/ ( ((float)somatorio)/( (float)qtd )  ) );
+}
+
+/**
+    função auxiliar para qualquer o somatorio de
+    todos os elementos do vetor Q
+*/
+float Grafo::SomatorioQ(float *q, int tam)
+{
+    float somatorio =0;
+    for(int i =0 ; i < tam ; i++) somatorio = somatorio + q[i] ;
+    return somatorio;
+}
+
+/**
+     o vetor de probabilidade foi montado de forma
+     crescente de 0 a 1000 diminuindo a perda de precisão
+*/
+int Grafo::RandomPseudoAleatorio(float * prob, int tamAlf)
+{
+    //sleep(1);
+    int x = rand() % 1000;
+    for (int i=0; i< tamAlf; i++)
+    {
+        if( x < prob[i])
+        {
+            return i;
+        }
+    }
+    return tamAlf-1;
+}
+
+/**
+ * Faz uma arvore geradora minima ou se o grafo for conexo ou
+ * faz florestas se o grafo for desconexo
+ */
+void Grafo::kruskal()
+{
+    if(n != 0){
+        No* p = primeiro;
+        int vetArv[n];
+        bool visit[n];
+        bool condicao[n];
+        Aresta* a = p->getPrimeiraAresta();
+        ListaAresta* lista = new ListaAresta();
+
+        for(int i = 0; i < n; i++){
+            vetArv[i] = p->getId();
+            visit[i] = false;
+            condicao[i] = false;
+            p = p->getProx();
+        }
+        p = primeiro;
+
+        while(p != NULL){
+            while(a != NULL){
+                if(!visit[a->getV1()])
+                    lista->insereOrdenado(a, p->getId());
+                a = a->getProx();
+            }
+            visit[p->getId()] = true;
+            p = p->getProx();
+            if(p != NULL)
+                a = p->getPrimeiraAresta();
+        }
+
+
+
+//        lista->imprimeAresta();
+        p = primeiro;
+        a = lista->getPrimeira();
+        int cont = 0;
+        cout << "Arvore geradora: " << endl;
+        while(!lista->vazia() && cont != n-1){
+            if(condicao[lista->getPrimeira()->getPai()] && condicao[lista->getPrimeira()->getV1()])
+                lista->removeK(lista->getPrimeira());
+            else{
+                if(lista->getPrimeira()->getPai() > lista->getPrimeira()->getV1()){
+                    cout << "Aresta de " << lista->getPrimeira()->getPai() << " para " << lista->getPrimeira()->getV1() << " peso: " << lista->getPrimeira()->getPeso() << endl;
+                    condicao[lista->getPrimeira()->getPai()] = true;
+                    lista->removeK(lista->getPrimeira());
+                    cont++;
+                }
+                else{
+                    cout << "Aresta de " << lista->getPrimeira()->getPai() << " para " << lista->getPrimeira()->getV1() << " peso: " << lista->getPrimeira()->getPeso() << endl;
+                    condicao[lista->getPrimeira()->getV1()] = true;
+                    lista->removeK(lista->getPrimeira());
+                    cont++;
+                }
+            }
+
+        }
+        if(lista->vazia() && cont != n-1)
+                    cout << "Grafo desconexo" << endl;
+        cout << "Numero de aresta na solucao: " << cont << endl;
+        cout << "Numero de vertices: " << cont+1 << endl;
+
+
+        delete lista;
+    }
+}
+
+/**
+ * Verifica se o grafo eh bipartido
+ */
+void Grafo::bipartido()
+{
+    if(n != 0){
+        No* p = primeiro;
+        bool visit[n];
+        int color[n]; // particao a = 0 / particao b = 1
+        for(int i = 0; i < n; i++){
+            visit[i] = false;
+            color[i] = -1;
+        }
+        Pilha pilha;
+        int cont = 0;
+        int status = 0;
+        pilha.empilha(p->getId());
+        cont++;
+        visit[p->getId()] = true;
+        color[p->getId()] = 0;
+
+        Aresta* a;
+        while(!pilha.vazia()){
+            a = p->getPrimeiraAresta();
+            while(a != NULL){
+                if(!visit[a->getV1()]){
+                    visit[a->getV1()] = true;
+                    cont++;
+                    if(color[a->getV1()] == -1){
+                        if(color[p->getId()] == 0){
+                            color[a->getV1()] = 1;
+                            pilha.empilha(a->getV1());
+                            p = busca(pilha.getTopo());
+                            a = p->getPrimeiraAresta();
+                        }
+                        else{
+                            color[a->getV1()] = 0;
+                            pilha.empilha(a->getV1());
+                            p = busca(pilha.getTopo());
+                            a = p->getPrimeiraAresta();
+                        }
+                    }
+                    else{
+                        if(color[p->getId()] == 0){
+                            if(color[a->getV1()] == 0){
+                                status = -1;
+                                break;
+                            }
+                            else{
+                                pilha.empilha(a->getV1());
+                                p = busca(pilha.getTopo());
+                                a = p->getPrimeiraAresta();
+                            }
+                        }
+                        else{
+                            if(color[a->getV1()] == 1){
+                                status = -1;
+                                break;
+                            }
+                            else{
+                                pilha.empilha(a->getV1());
+                                p = busca(pilha.getTopo());
+                                a = p->getPrimeiraAresta();
+                            }
+                        }
+                    }
+                }else{
+                    if(color[p->getId()] != color[a->getV1()])
+                        a = a->getProx();
+                    else {
+                        status = -1;
+                        break;
+                    }
+                }
+            }
+            pilha.desempilha();
+            p = busca(pilha.getTopo());
+        }
+        if(status == 0)
+            cout << "Grafo admite biparticao" << endl;
+        else cout << "Grafo nao admite biparticao!!" << endl;
+    }
+}
+
+/**
+ * Faz uma busca em profundidade para ver se o grafo eh conexo
+ * @param v Vertice inicial
+ */
+void Grafo::buscaProfundidade(int v)
+{
+    No* p = busca(v);
+    if(p != NULL){
+        bool visit[n];
+        int cont = 0;
+        for(int i = 0; i < n; i++)
+            visit[i] = false;
+
+        Pilha pilha;
+        pilha.empilha(p->getId());
+
+        visit[p->getId()] = true;
+        cont++;
+
+        Aresta* a;
+        while(!pilha.vazia()){
+            a = p->getPrimeiraAresta();
+            while(a != NULL){
+                if(!visit[a->getV1()]){
+                    visit[a->getV1()] = true;
+                    cont++;
+                    //cout << "\t " << a->getV1();
+                    pilha.empilha(a->getV1());
+                    p = busca(pilha.getTopo());
+                    a = p->getPrimeiraAresta();
+                }else{
+                    a = a->getProx();
+                }
+            }
+            pilha.desempilha();
+            p = busca(pilha.getTopo());
+        }
+    if(cont == n){
+        cout << endl <<  "Grafo conexo!!!" << endl;
+    }
+    else cout << "Grafo desconexo!!!" << endl;
     }
 }

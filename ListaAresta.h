@@ -14,6 +14,10 @@ class ListaAresta
         int* getArestas();
         int getPeso(int i);
         Aresta* getPrimeira();
+        void insereOrdenado(Aresta* a, int v);
+        void removeK(Aresta* a);
+
+        bool vazia();
 
     private:
         Aresta *primeiro;

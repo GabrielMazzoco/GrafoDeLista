@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mazzoco/Documents/GrafoDeLista/NoPilha.h
+
+/home/mazzoco/Documents/GrafoDeLista/Pilha.cpp
+iostream
+-
+Pilha.h
+/home/mazzoco/Documents/GrafoDeLista/Pilha.h
+
+/home/mazzoco/Documents/GrafoDeLista/Pilha.h
+NoPilha.h
+/home/mazzoco/Documents/GrafoDeLista/NoPilha.h
+

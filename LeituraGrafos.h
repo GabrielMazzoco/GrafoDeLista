@@ -5,7 +5,7 @@
 #ifndef GRAFODELISTA_LEITURAGRAFOS_H
 #define GRAFODELISTA_LEITURAGRAFOS_H
 #include <fstream>
-#include "Grafo/Grafo.h"
+#include "Grafo.h"
 
 using namespace std;
 

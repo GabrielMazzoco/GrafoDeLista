@@ -3,7 +3,7 @@
 //
 
 #include "LeituraGrafos.h"
-#include "Grafo/Grafo.h"
+#include "Grafo.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -14,6 +14,7 @@ using namespace std;
  *Le o arquivo de entrada e inicia o Grafo com seus nos e respectivas
  * arestas.
  * @param(Grafo *p) Ponteiro do Grafo
+ * @param(char *path) String com caminho do arquivo
  * @return: Funcao sem retorno
  *****************************************************************/
 void LeituraGrafos::iniciaGrafo(Grafo *p, char *path) {
@@ -26,12 +27,19 @@ void LeituraGrafos::iniciaGrafo(Grafo *p, char *path) {
         cout << "Numeros de Nos : " << a << endl;
         while(!file.eof()){
             file >> a >> b;
-            p->addAresta(a, b, 0);
+            p->addAresta(a, b, 1);
         }
     }
     file.close();
 }
 
+/**
+ *Le o arquivo de entrada e inicia o Grafo com seus nos e respectivas
+ * arestas com pesos.
+ * @param(Grafo *p) Ponteiro do Grafo
+ * @param(char *path) String com caminho do arquivo
+ * @return: Funcao sem retorno
+ *****************************************************************/
 void LeituraGrafos::iniciaGrafoPonderado(Grafo *p, char *path) {
     file.open(path);
     if(!file.is_open())

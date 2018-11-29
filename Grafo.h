@@ -2,6 +2,11 @@
 #define GRAFO_H
 #include "No.h"
 
+typedef struct grafoAux {
+    int tam;
+    int *vet;
+} grafoAux;
+
 class Grafo
 {
     public:
@@ -19,11 +24,19 @@ class Grafo
         void gulosoCobertura();
         void diminuiuGrauNosAdjacentes(No* p, No **vetInd, int *vet);
         void algFloyd(int a, int b);
-        void gulosoRandCobertura(float taxa, int vezes);
+        grafoAux gulosoRandCobertura(float taxa, int vezes);
         void menorCaminhoDijkstra(int v, int vN);
         bool verificaVisit(bool vet[], int n);
         bool ehCompleto();
         void sequenciaGraus();
+        grafoAux gulosoReativo(int k, int tamAlf);
+        float Qi(float tamMelhorS, float somatorio, float qtd);
+        float SomatorioQ(float *q, int tam);
+        int RandomPseudoAleatorio(float * prob, int tamAlf);
+        void kruskal();
+        void bipartido();
+        void buscaProfundidade(int v);
+
 
 
     private:

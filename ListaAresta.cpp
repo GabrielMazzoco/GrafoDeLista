@@ -139,3 +139,89 @@ int ListaAresta::getPeso(int i) {
 Aresta *ListaAresta::getPrimeira() {
     return primeiro;
 }
+
+void ListaAresta::insereOrdenado(Aresta* a, int v)
+{
+    Aresta* p = new Aresta();
+    p->setPeso(a->getPeso());
+    p->setProx(a->getProx());
+    p->setV1(a->getV1());
+    p->setPai(v);
+    if(n == 0){
+        primeiro = p;
+        ultimo = p;
+        p->setProx(NULL);
+        n++;
+    }
+    else{
+        if(p->getPeso() <= primeiro->getPeso()){
+            Aresta* q = primeiro;
+            p->setProx(q);
+            primeiro = p;
+            n++;
+        }
+        else if(p->getPeso() > ultimo->getPeso()){
+            ultimo->setProx(p);
+            p->setProx(NULL);
+            ultimo = p;
+            n++;
+        }
+        else{
+            Aresta* q = primeiro;
+            while(q->getProx()->getPeso() < p->getPeso())
+                    q = q->getProx();
+            Aresta* c = q->getProx();
+            q->setProx(p);
+            p->setProx(c);
+            n++;
+        }
+    }
+}
+
+void ListaAresta::removeK(Aresta* a)
+{
+    if(n == 0)
+        cout << "Lista Vazia!!!" << endl;
+    else{
+        Aresta* p = primeiro;
+        if(n == 1 && p == a){
+            delete p;
+            primeiro = NULL;
+            ultimo = NULL;
+            n--;
+        }
+        else if(p == a){
+            primeiro = p->getProx();
+            delete p;
+            n--;
+        }
+        else{
+            while(p != NULL){
+                if(p->getProx() != NULL && p->getProx() == a){
+                    if(p->getProx() == ultimo){
+                        Aresta* q = p->getProx();
+                        delete q;
+                        p->setProx(NULL);
+                        ultimo = p;
+                        n--;
+                    }
+                    else{
+                        Aresta* q = p->getProx();
+                        p->setProx(q->getProx());
+                        delete q;
+                        n--;
+                    }
+                }
+                p = p->getProx();
+            }
+        }
+    }
+}
+
+bool ListaAresta::vazia()
+{
+    if(n == 0)
+        return true;
+    else return false;
+}
+

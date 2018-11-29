@@ -14,8 +14,11 @@ class Aresta
         void setPeso(int v) { peso = v; }
         int getV1()       { return v1; }
         int getPeso()       { return peso; }
+        void setPai(int v) { pai = v; };
+        int getPai() { return pai; };
 
     private:
+        int pai;
         int v1;
         int peso;
         Aresta *prox;

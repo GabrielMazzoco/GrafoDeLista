@@ -6,12 +6,15 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(GrafoDeLista
-        Grafo/Aresta.h
-        Grafo/Grafo.cpp
-        Grafo/Grafo.h
-        Grafo/ListaAresta.cpp
-        Grafo/ListaAresta.h
+        Aresta.h
+        Grafo.cpp
+        Grafo.h
+        ListaAresta.cpp
+        ListaAresta.h
         main.cpp
-        Grafo/No.h
-        Leitura/LeituraGrafos.cpp
-        Leitura/LeituraGrafos.h)
+        No.h
+        LeituraGrafos.cpp
+        LeituraGrafos.h
+        No.h
+        NoPilha.h
+        Pilha.cpp)
